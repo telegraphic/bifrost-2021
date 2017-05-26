@@ -1,0 +1,188 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>6. Fast GPU math using bfMap &#8212; bifrost 0.6 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="7. How bifrost fits together" href="How-Python-and-C---fits-together.html" />
+    <link rel="prev" title="5. Views" href="views.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="fast-gpu-math-using-bfmap">
+<h1>6. Fast GPU math using bfMap<a class="headerlink" href="#fast-gpu-math-using-bfmap" title="Permalink to this headline">¶</a></h1>
+<p>A key under-the-hood part of <code class="docutils literal"><span class="pre">bifrost</span></code> is the <code class="docutils literal"><span class="pre">map</span></code> function, that
+provides a simple way to do fast arithmetic operations on the GPU. To
+get acquainted, we will ignore all of the pipeline infrastructure that
+bifrost provides, and just call the map function directly.</p>
+<p>Let’s suppose you have two <code class="docutils literal"><span class="pre">ndarrays</span></code> and wish to add them together on
+the GPU. Here is how you would do that with <code class="docutils literal"><span class="pre">map</span></code>:</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">bifrost</span> <span class="k">as</span> <span class="nn">bf</span>
+
+<span class="c1"># Create two arrays on the GPU, A and B, and an empty output C</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">bf</span><span class="o">.</span><span class="n">ndarray</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="n">space</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">bf</span><span class="o">.</span><span class="n">ndarray</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">space</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">bf</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="n">space</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+
+<span class="c1"># Add them together</span>
+<span class="n">bf</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="s2">&quot;c = a + b&quot;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">c</span>
+<span class="c1"># ndarray([ 2.,  2.,  4.,  4.,  6.])</span>
+</pre></div>
+</div>
+<p>The map function figures out what to do based on the string you give it.
+These would also work:</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">bf</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="s2">&quot;c = a - b&quot;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+<span class="n">bf</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="s2">&quot;c = a * b&quot;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+<span class="n">bf</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="s2">&quot;c = a / b&quot;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+<span class="n">bf</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="s2">&quot;c += a + b&quot;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+<span class="n">bf</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="s2">&quot;c /= a + b&quot;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+<span class="n">bf</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="s2">&quot;c *= a + b&quot;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Getting deeper requires a look at the docstring:</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="n">func_string</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Apply a function to a set of ndarrays.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">      func_string: The function to apply to the arrays, as a string (see below</span>
+<span class="sd">                   for examples).</span>
+<span class="sd">      shape:       The shape of the computation.</span>
+<span class="sd">      *args:       List of string names by which each axis is referenced</span>
+<span class="sd">                   in func_string.</span>
+<span class="sd">      **kwargs:    Map of string names to ndarrays.</span>
+
+<span class="sd">    If shape is None, the broadcast shape of all of the arrays is used.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">      # Add two arrays together</span>
+<span class="sd">      bf.map(&quot;c = a + b&quot;, c=c, a=a, b=b)</span>
+
+<span class="sd">      # Compute outer product of two arrays</span>
+<span class="sd">      bf.map(&quot;c(i,j) = a(i) * b(j)&quot;, &#39;i&#39;, &#39;j&#39;, c=c, a=a, b=b)</span>
+
+<span class="sd">      # Split the components of a complex array</span>
+<span class="sd">      bf.map(&quot;a = c.real; b = c.imag&quot;, c=c, a=a, b=b)</span>
+
+<span class="sd">      # Raise an array to a scalar power</span>
+<span class="sd">      bf.map(&quot;c = pow(a, p)&quot;, c=c, a=a, p=2.0)</span>
+
+<span class="sd">      # Slice an array with a scalar index</span>
+<span class="sd">      bf.map(&quot;c(i) = a(i,k)&quot;, &#39;i&#39;, c=c, a=a, k=7, shape=c.shape)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</pre></div>
+</div>
+<p>Let’s look a bit closer at that outer product example. Here, by
+convention of summation notation, the indexes ‘i’, ‘j’ on the two arrays
+A and B, create an outer product. A full example:</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">bifrost</span> <span class="k">as</span> <span class="nn">bf</span>
+
+<span class="c1"># Create two arrays on the GPU, A and B, and an empty output C</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">bf</span><span class="o">.</span><span class="n">ndarray</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="n">space</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">bf</span><span class="o">.</span><span class="n">ndarray</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">space</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">bf</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span> <span class="n">space</span><span class="o">=</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+
+<span class="c1"># Compute outer product</span>
+<span class="n">bf</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="s2">&quot;c(i,j) = a(i) * b(j)&quot;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">c</span>
+
+<span class="c1"># ndarray([[ 1.,  0.,  1.,  0.,  1.],</span>
+<span class="c1">#          [ 2.,  0.,  2.,  0.,  2.],</span>
+<span class="c1">#          [ 3.,  0.,  3.,  0.,  3.],</span>
+<span class="c1">#          [ 4.,  0.,  4.,  0.,  4.],</span>
+<span class="c1">#          [ 5.,  0.,  5.,  0.,  5.]])</span>
+</pre></div>
+</div>
+<p>The first example of <code class="docutils literal"><span class="pre">c</span> <span class="pre">=</span> <span class="pre">a</span> <span class="pre">+</span> <span class="pre">b</span></code> could be written more explicitly as:</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">bf</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="s2">&quot;c(i) = a(i) + b(i)&quot;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="views.html" title="previous chapter">5. Views</a></li>
+      <li>Next: <a href="How-Python-and-C---fits-together.html" title="next chapter">7. How bifrost fits together</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/bfmap.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, ledatelescope.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/bfmap.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
