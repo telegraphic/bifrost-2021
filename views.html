@@ -64,15 +64,16 @@ shape<code class="docutils literal"><span class="pre">[-1,</span> <span class="p
 </ul>
 <p>As an example, this reads two “time steps” from a GUPPI RAW file, and
 squishes it into one longer time step:</p>
-<p>“`python # Read from guppi raw file b_guppi =
-blocks.read_guppi_raw(filelist, core=1, buffer_nframe=4) b_gup2 =
-views.rename_axis(b_guppi, ‘freq’, ‘channel’)</p>
-<p># Buffer up two time steps &amp; reshape to allow longer FFT b_gup2 =
-views.split_axis(b_gup2, axis=’time’, n=n_chunks,
-label=’time_chunk’) b_gup2 = blocks.transpose(b_gup2, axes=[‘time’,
-‘channel’, ‘time_chunk’, ‘fine_time’, ‘pol’], buffer_nframe=1)
-b_gup2 = views.merge_axes(b_gup2, ‘time_chunk’, ‘fine_time’,
-label=’fine_time’) “`</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Read from guppi raw file</span>
+<span class="n">b_guppi</span>   <span class="o">=</span> <span class="n">blocks</span><span class="o">.</span><span class="n">read_guppi_raw</span><span class="p">(</span><span class="n">filelist</span><span class="p">,</span> <span class="n">core</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">buffer_nframe</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">b_gup2</span>    <span class="o">=</span> <span class="n">views</span><span class="o">.</span><span class="n">rename_axis</span><span class="p">(</span><span class="n">b_guppi</span><span class="p">,</span> <span class="s1">&#39;freq&#39;</span><span class="p">,</span> <span class="s1">&#39;channel&#39;</span><span class="p">)</span>
+
+<span class="c1"># Buffer up two time steps &amp; reshape to allow longer FFT</span>
+<span class="n">b_gup2</span>    <span class="o">=</span> <span class="n">views</span><span class="o">.</span><span class="n">split_axis</span><span class="p">(</span><span class="n">b_gup2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n_chunks</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;time_chunk&#39;</span><span class="p">)</span>
+<span class="n">b_gup2</span>    <span class="o">=</span> <span class="n">blocks</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">b_gup2</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;channel&#39;</span><span class="p">,</span> <span class="s1">&#39;time_chunk&#39;</span><span class="p">,</span> <span class="s1">&#39;fine_time&#39;</span><span class="p">,</span> <span class="s1">&#39;pol&#39;</span><span class="p">],</span> <span class="n">buffer_nframe</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">b_gup2</span>    <span class="o">=</span> <span class="n">views</span><span class="o">.</span><span class="n">merge_axes</span><span class="p">(</span><span class="n">b_gup2</span><span class="p">,</span> <span class="s1">&#39;time_chunk&#39;</span><span class="p">,</span> <span class="s1">&#39;fine_time&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;fine_time&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 
 
