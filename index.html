@@ -72,87 +72,94 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="views.html">5. Views</a></li>
-<li class="toctree-l1"><a class="reference internal" href="bfmap.html">6. Fast GPU math using bfMap</a></li>
-<li class="toctree-l1"><a class="reference internal" href="How-Python-and-C---fits-together.html">7. How bifrost fits together</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="How-Python-and-C---fits-together.html#a-trip-to-the-c">7.1. A trip to the C</a></li>
-<li class="toctree-l2"><a class="reference internal" href="How-Python-and-C---fits-together.html#example-c-codes">7.2. Example C++ codes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools-intro.html">6. Monitoring Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tools-intro.html#nvprof">6.1. NVProf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools-intro.html#pipeline-in-dev-shm">6.2. Pipeline in /dev/shm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools-intro.html#like-top-py">6.3. like_top.py</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="Common-installation-and-execution-problems.html">8. Common Installation and Execution Problems</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Common-installation-and-execution-problems.html#the-program-hangs">8.1. (The program hangs)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Common-installation-and-execution-problems.html#importerror-no-module-named-pyclibrary">8.2. ImportError: No module named pyclibrary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Common-installation-and-execution-problems.html#oserror-lib-libbifrost-so-undefined-symbol-cudafreehost">8.3. OSError: …./lib/libbifrost.so: undefined symbol: cudaFreeHost</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Common-installation-and-execution-problems.html#oserror-can-t-find-library-with-name-libbifrost-so">8.4. OSError: Can’t find library with name libbifrost.so</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Common-installation-and-execution-problems.html#oserror-libcudart-so-x-0-cannot-open-shared-object-file-no-such-file-or-directory">8.5. OSError: libcudart.so.x.0: cannot open shared object file: No such file or directory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bfmap.html">7. Fast GPU math using bfMap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="How-Python-and-C---fits-together.html">8. How bifrost fits together</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="How-Python-and-C---fits-together.html#a-trip-to-the-c">8.1. A trip to the C</a></li>
+<li class="toctree-l2"><a class="reference internal" href="How-Python-and-C---fits-together.html#example-c-codes">8.2. Example C++ codes</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="bifrost.blocks.html">9. Block Library Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#submodules">9.1. Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.accumulate">9.2. bifrost.blocks.accumulate module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.audio">9.3. bifrost.blocks.audio module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.binary_io">9.4. bifrost.blocks.binary_io module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.copy">9.5. bifrost.blocks.copy module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.detect">9.6. bifrost.blocks.detect module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.fdmt">9.7. bifrost.blocks.fdmt module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.fft">9.8. bifrost.blocks.fft module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.fftshift">9.9. bifrost.blocks.fftshift module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.guppi_raw">9.10. bifrost.blocks.guppi_raw module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.print_header">9.11. bifrost.blocks.print_header module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.quantize">9.12. bifrost.blocks.quantize module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.reverse">9.13. bifrost.blocks.reverse module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.scrunch">9.14. bifrost.blocks.scrunch module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.sigproc">9.15. bifrost.blocks.sigproc module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.transpose">9.16. bifrost.blocks.transpose module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.unpack">9.17. bifrost.blocks.unpack module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.wav">9.18. bifrost.blocks.wav module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks">9.19. Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Common-installation-and-execution-problems.html">9. Common Installation and Execution Problems</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Common-installation-and-execution-problems.html#the-program-hangs">9.1. (The program hangs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Common-installation-and-execution-problems.html#importerror-no-module-named-pyclibrary">9.2. ImportError: No module named pyclibrary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Common-installation-and-execution-problems.html#oserror-lib-libbifrost-so-undefined-symbol-cudafreehost">9.3. OSError: …./lib/libbifrost.so: undefined symbol: cudaFreeHost</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Common-installation-and-execution-problems.html#oserror-can-t-find-library-with-name-libbifrost-so">9.4. OSError: Can’t find library with name libbifrost.so</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Common-installation-and-execution-problems.html#oserror-libcudart-so-x-0-cannot-open-shared-object-file-no-such-file-or-directory">9.5. OSError: libcudart.so.x.0: cannot open shared object file: No such file or directory</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="bifrost.html">10. Python Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#subpackages">10.1. Subpackages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#submodules">10.2. Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.DataType">10.3. bifrost.DataType module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#bifrost-gpuarray-module">10.4. bifrost.GPUArray module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.Space">10.5. bifrost.Space module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.address">10.6. bifrost.address module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.affinity">10.7. bifrost.affinity module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.block">10.8. bifrost.block module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.core">10.9. bifrost.core module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.device">10.10. bifrost.device module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.dtype">10.11. bifrost.dtype module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.fdmt">10.12. bifrost.fdmt module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.fft">10.13. bifrost.fft module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.guppi_raw">10.14. bifrost.guppi_raw module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.header_standard">10.15. bifrost.header_standard module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.libbifrost">10.16. bifrost.libbifrost module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.linalg">10.17. bifrost.linalg module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.map">10.18. bifrost.map module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.memory">10.19. bifrost.memory module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.ndarray">10.20. bifrost.ndarray module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.pipeline">10.21. bifrost.pipeline module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.portaudio">10.22. bifrost.portaudio module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.proclog">10.23. bifrost.proclog module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.quantize">10.24. bifrost.quantize module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.ring">10.25. bifrost.ring module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.ring2">10.26. bifrost.ring2 module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.sigproc">10.27. bifrost.sigproc module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.sigproc2">10.28. bifrost.sigproc2 module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.temp_storage">10.29. bifrost.temp_storage module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.transpose">10.30. bifrost.transpose module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.udp_capture">10.31. bifrost.udp_capture module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.udp_socket">10.32. bifrost.udp_socket module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.udp_transmit">10.33. bifrost.udp_transmit module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.units">10.34. bifrost.units module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.unpack">10.35. bifrost.unpack module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.version">10.36. bifrost.version module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost">10.37. Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bifrost.blocks.html">10. Block Library Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#submodules">10.1. Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.accumulate">10.2. bifrost.blocks.accumulate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.audio">10.3. bifrost.blocks.audio module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.binary_io">10.4. bifrost.blocks.binary_io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.copy">10.5. bifrost.blocks.copy module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.detect">10.6. bifrost.blocks.detect module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.fdmt">10.7. bifrost.blocks.fdmt module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.fft">10.8. bifrost.blocks.fft module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.fftshift">10.9. bifrost.blocks.fftshift module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.guppi_raw">10.10. bifrost.blocks.guppi_raw module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.print_header">10.11. bifrost.blocks.print_header module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.quantize">10.12. bifrost.blocks.quantize module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.reverse">10.13. bifrost.blocks.reverse module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.scrunch">10.14. bifrost.blocks.scrunch module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.sigproc">10.15. bifrost.blocks.sigproc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.transpose">10.16. bifrost.blocks.transpose module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.unpack">10.17. bifrost.blocks.unpack module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks.wav">10.18. bifrost.blocks.wav module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.blocks.html#module-bifrost.blocks">10.19. Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="Cpp-Development.html">11. C++ Developement</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Cpp-Development.html#create-a-ring-buffer-and-load-data">11.1. Create a Ring Buffer and Load Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bifrost.html">11. Python Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#subpackages">11.1. Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#submodules">11.2. Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.DataType">11.3. bifrost.DataType module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#bifrost-gpuarray-module">11.4. bifrost.GPUArray module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.Space">11.5. bifrost.Space module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.address">11.6. bifrost.address module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.affinity">11.7. bifrost.affinity module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.block">11.8. bifrost.block module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.core">11.9. bifrost.core module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.device">11.10. bifrost.device module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.dtype">11.11. bifrost.dtype module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.fdmt">11.12. bifrost.fdmt module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.fft">11.13. bifrost.fft module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.guppi_raw">11.14. bifrost.guppi_raw module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.header_standard">11.15. bifrost.header_standard module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.libbifrost">11.16. bifrost.libbifrost module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.linalg">11.17. bifrost.linalg module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.map">11.18. bifrost.map module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.memory">11.19. bifrost.memory module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.ndarray">11.20. bifrost.ndarray module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.pipeline">11.21. bifrost.pipeline module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.portaudio">11.22. bifrost.portaudio module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.proclog">11.23. bifrost.proclog module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.proclog_bak">11.24. bifrost.proclog_bak module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.quantize">11.25. bifrost.quantize module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.ring">11.26. bifrost.ring module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.ring2">11.27. bifrost.ring2 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.sigproc">11.28. bifrost.sigproc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.sigproc2">11.29. bifrost.sigproc2 module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.temp_storage">11.30. bifrost.temp_storage module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.transpose">11.31. bifrost.transpose module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.udp_capture">11.32. bifrost.udp_capture module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.udp_socket">11.33. bifrost.udp_socket module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.udp_transmit">11.34. bifrost.udp_transmit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.units">11.35. bifrost.units module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.unpack">11.36. bifrost.unpack module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost.version">11.37. bifrost.version module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bifrost.html#module-bifrost">11.38. Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="cpp_reference.html">12. C++ Reference</a><ul class="simple">
+<li class="toctree-l1"><a class="reference internal" href="Cpp-Development.html">12. C++ Developement</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Cpp-Development.html#create-a-ring-buffer-and-load-data">12.1. Create a Ring Buffer and Load Data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cpp_reference.html">13. C++ Reference</a><ul class="simple">
 </ul>
 </li>
 </ul>

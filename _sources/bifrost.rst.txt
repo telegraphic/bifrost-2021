@@ -180,6 +180,14 @@ bifrost\.proclog module
     :undoc-members:
     :show-inheritance:
 
+bifrost\.proclog\_bak module
+----------------------------
+
+.. automodule:: bifrost.proclog_bak
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bifrost\.quantize module
 ------------------------
 

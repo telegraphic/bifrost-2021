@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>10.1.1. bifrost.views package &#8212; bifrost 0.6 documentation</title>
+    <title>11.1.1. bifrost.views package &#8212; bifrost 0.6 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -27,8 +27,8 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="11. C++ Developement" href="Cpp-Development.html" />
-    <link rel="prev" title="10. Python Reference" href="bifrost.html" />
+    <link rel="next" title="12. C++ Developement" href="Cpp-Development.html" />
+    <link rel="prev" title="11. Python Reference" href="bifrost.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -45,12 +45,12 @@
           <div class="body" role="main">
             
   <div class="section" id="bifrost-views-package">
-<h1>10.1.1. bifrost.views package<a class="headerlink" href="#bifrost-views-package" title="Permalink to this headline">¶</a></h1>
+<h1>11.1.1. bifrost.views package<a class="headerlink" href="#bifrost-views-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
-<h2>10.1.1.1. Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<h2>11.1.1.1. Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-bifrost.views.basic_views">
-<span id="bifrost-views-basic-views-module"></span><h2>10.1.1.2. bifrost.views.basic_views module<a class="headerlink" href="#module-bifrost.views.basic_views" title="Permalink to this headline">¶</a></h2>
+<span id="bifrost-views-basic-views-module"></span><h2>11.1.1.2. bifrost.views.basic_views module<a class="headerlink" href="#module-bifrost.views.basic_views" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="bifrost.views.basic_views.astype">
 <code class="descclassname">bifrost.views.basic_views.</code><code class="descname">astype</code><span class="sig-paren">(</span><em>block</em>, <em>dtype</em><span class="sig-paren">)</span><a class="headerlink" href="#bifrost.views.basic_views.astype" title="Permalink to this definition">¶</a></dt>
@@ -65,17 +65,33 @@
 <dl class="function">
 <dt id="bifrost.views.basic_views.expand_dims">
 <code class="descclassname">bifrost.views.basic_views.</code><code class="descname">expand_dims</code><span class="sig-paren">(</span><em>block</em>, <em>axis</em>, <em>label</em>, <em>scale=None</em>, <em>units=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bifrost.views.basic_views.expand_dims" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Add an extra dimension to the frame</p>
+<p>As in, if the shape is [-1, 3, 2], then
+selecting axis=1 would change the shape to be
+[-1, 3, 1, 2].</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="bifrost.views.basic_views.merge_axes">
-<code class="descclassname">bifrost.views.basic_views.</code><code class="descname">merge_axes</code><span class="sig-paren">(</span><em>block</em>, <em>axis1</em>, <em>axis2</em>, <em>label=None</em>, <em>ignore_units=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bifrost.views.basic_views.merge_axes" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bifrost.views.basic_views.</code><code class="descname">merge_axes</code><span class="sig-paren">(</span><em>block</em>, <em>axis1</em>, <em>axis2</em>, <em>label=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bifrost.views.basic_views.merge_axes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="function">
+<dt id="bifrost.views.basic_views.reinterpret_axis">
+<code class="descclassname">bifrost.views.basic_views.</code><code class="descname">reinterpret_axis</code><span class="sig-paren">(</span><em>block</em>, <em>axis</em>, <em>label</em>, <em>scale=None</em>, <em>units=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bifrost.views.basic_views.reinterpret_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Manually reinterpret the scale and/or units on an axis</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="bifrost.views.basic_views.rename_axis">
 <code class="descclassname">bifrost.views.basic_views.</code><code class="descname">rename_axis</code><span class="sig-paren">(</span><em>block</em>, <em>old</em>, <em>new</em><span class="sig-paren">)</span><a class="headerlink" href="#bifrost.views.basic_views.rename_axis" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="function">
+<dt id="bifrost.views.basic_views.reverse_scale">
+<code class="descclassname">bifrost.views.basic_views.</code><code class="descname">reverse_scale</code><span class="sig-paren">(</span><em>block</em>, <em>axis</em><span class="sig-paren">)</span><a class="headerlink" href="#bifrost.views.basic_views.reverse_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Manually reverse the scale factor on a given axis</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="bifrost.views.basic_views.split_axis">
@@ -84,7 +100,7 @@
 
 </div>
 <div class="section" id="module-bifrost.views">
-<span id="module-contents"></span><h2>10.1.1.3. Module contents<a class="headerlink" href="#module-bifrost.views" title="Permalink to this headline">¶</a></h2>
+<span id="module-contents"></span><h2>11.1.1.3. Module contents<a class="headerlink" href="#module-bifrost.views" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -96,10 +112,10 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">10.1.1. bifrost.views package</a><ul>
-<li><a class="reference internal" href="#submodules">10.1.1.1. Submodules</a></li>
-<li><a class="reference internal" href="#module-bifrost.views.basic_views">10.1.1.2. bifrost.views.basic_views module</a></li>
-<li><a class="reference internal" href="#module-bifrost.views">10.1.1.3. Module contents</a></li>
+<li><a class="reference internal" href="#">11.1.1. bifrost.views package</a><ul>
+<li><a class="reference internal" href="#submodules">11.1.1.1. Submodules</a></li>
+<li><a class="reference internal" href="#module-bifrost.views.basic_views">11.1.1.2. bifrost.views.basic_views module</a></li>
+<li><a class="reference internal" href="#module-bifrost.views">11.1.1.3. Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -107,9 +123,9 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-  <li><a href="bifrost.html">10. Python Reference</a><ul>
-      <li>Previous: <a href="bifrost.html" title="previous chapter">10. Python Reference</a></li>
-      <li>Next: <a href="Cpp-Development.html" title="next chapter">11. C++ Developement</a></li>
+  <li><a href="bifrost.html">11. Python Reference</a><ul>
+      <li>Previous: <a href="bifrost.html" title="previous chapter">11. Python Reference</a></li>
+      <li>Next: <a href="Cpp-Development.html" title="next chapter">12. C++ Developement</a></li>
   </ul></li>
   </ul></li>
 </ul>

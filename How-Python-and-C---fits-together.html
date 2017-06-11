@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>7. How bifrost fits together &#8212; bifrost 0.6 documentation</title>
+    <title>8. How bifrost fits together &#8212; bifrost 0.6 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -27,8 +27,8 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="8. Common Installation and Execution Problems" href="Common-installation-and-execution-problems.html" />
-    <link rel="prev" title="6. Fast GPU math using bfMap" href="bfmap.html" />
+    <link rel="next" title="9. Common Installation and Execution Problems" href="Common-installation-and-execution-problems.html" />
+    <link rel="prev" title="7. Fast GPU math using bfMap" href="bfmap.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -45,7 +45,7 @@
           <div class="body" role="main">
             
   <div class="section" id="how-bifrost-fits-together">
-<h1>7. How bifrost fits together<a class="headerlink" href="#how-bifrost-fits-together" title="Permalink to this headline">¶</a></h1>
+<h1>8. How bifrost fits together<a class="headerlink" href="#how-bifrost-fits-together" title="Permalink to this headline">¶</a></h1>
 <p><em>(aka seeing C in Python pipelines)</em></p>
 <p>Bifrost is based on two maxims: 1) by itself, C sucks. 2) by itself,
 Python sucks.</p>
@@ -53,7 +53,7 @@ Python sucks.</p>
 customized numpy array class, and enforcing some pipeline friendly
 design choices.</p>
 <div class="section" id="a-trip-to-the-c">
-<h2>7.1. A trip to the C<a class="headerlink" href="#a-trip-to-the-c" title="Permalink to this headline">¶</a></h2>
+<h2>8.1. A trip to the C<a class="headerlink" href="#a-trip-to-the-c" title="Permalink to this headline">¶</a></h2>
 <p>Suppose you have some custom C code which you want to integrate into a
 bifrost pipeline. Here’s a nice and simple snippet that adds two arrays
 together:</p>
@@ -66,7 +66,7 @@ together:</p>
 <p>To get this into bifrost and use it in Python, you need to ‘bifrostify’
 this code to accept bifrost’s special <code class="docutils literal"><span class="pre">ndarray</span></code> class.</p>
 <div class="section" id="bifrost-python-ndarrays">
-<h3>7.1.1. Bifrost Python ndarrays<a class="headerlink" href="#bifrost-python-ndarrays" title="Permalink to this headline">¶</a></h3>
+<h3>8.1.1. Bifrost Python ndarrays<a class="headerlink" href="#bifrost-python-ndarrays" title="Permalink to this headline">¶</a></h3>
 <p>Bifrost has a special array class in python that plays nicely with C:</p>
 <div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">bifrost</span> <span class="k">as</span> <span class="nn">bf</span>
 <span class="n">a</span> <span class="o">=</span> <span class="n">bf</span><span class="o">.</span><span class="n">ndarray</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span>  <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;f32&#39;</span><span class="p">)</span>
@@ -87,7 +87,7 @@ other useful stuff.</p>
 </div>
 </div>
 <div class="section" id="bifrost-c-bfarray">
-<h3>7.1.2. Bifrost C++ BFarray<a class="headerlink" href="#bifrost-c-bfarray" title="Permalink to this headline">¶</a></h3>
+<h3>8.1.2. Bifrost C++ BFarray<a class="headerlink" href="#bifrost-c-bfarray" title="Permalink to this headline">¶</a></h3>
 <p>In the bifrost C++ code, there is a matching <code class="docutils literal"><span class="pre">BFarray</span></code> that makes
 interfacing with Python straightforward. This is essentially a struct
 that provides the same info as the Python <code class="docutils literal"><span class="pre">ndarray</span></code>.</p>
@@ -112,7 +112,7 @@ from before, after it’s been bifrostified:</p>
 <p>A full code example (with headers etc) can be found at the end.</p>
 </div>
 <div class="section" id="using-your-c-code-in-python">
-<h3>7.1.3. Using your C++ code in Python<a class="headerlink" href="#using-your-c-code-in-python" title="Permalink to this headline">¶</a></h3>
+<h3>8.1.3. Using your C++ code in Python<a class="headerlink" href="#using-your-c-code-in-python" title="Permalink to this headline">¶</a></h3>
 <p>Now comes the cool part. You’ll need to edit three files:</p>
 <ol class="arabic simple">
 <li>create <code class="docutils literal"><span class="pre">add_stuff.cpp</span></code> in <code class="docutils literal"><span class="pre">src</span></code></li>
@@ -138,15 +138,15 @@ can’t just pass <code class="docutils literal"><span class="pre">a</span></cod
 <code class="docutils literal"><span class="pre">as_BFarray()</span></code> output.</p>
 </div>
 <div class="section" id="wrapping-up">
-<h3>7.1.4. Wrapping up<a class="headerlink" href="#wrapping-up" title="Permalink to this headline">¶</a></h3>
+<h3>8.1.4. Wrapping up<a class="headerlink" href="#wrapping-up" title="Permalink to this headline">¶</a></h3>
 <p>Bravo, you’ve managed to run C++ code in bifrost! All the rest of the
 pipeline stuff is just python (to be continued…)</p>
 </div>
 </div>
 <div class="section" id="example-c-codes">
-<h2>7.2. Example C++ codes<a class="headerlink" href="#example-c-codes" title="Permalink to this headline">¶</a></h2>
+<h2>8.2. Example C++ codes<a class="headerlink" href="#example-c-codes" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="add-stuff-cpp">
-<h3>7.2.1. add_stuff.cpp<a class="headerlink" href="#add-stuff-cpp" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.1. add_stuff.cpp<a class="headerlink" href="#add-stuff-cpp" title="Permalink to this headline">¶</a></h3>
 <div class="code C highlight-default"><div class="highlight"><pre><span></span><span class="c1">#include &lt;bifrost/cpu_add.h&gt;</span>
 <span class="c1">#include &lt;bifrost/array.h&gt;</span>
 <span class="c1">#include &lt;bifrost/common.h&gt;</span>
@@ -177,7 +177,7 @@ pipeline stuff is just python (to be continued…)</p>
 </div>
 </div>
 <div class="section" id="bifrost-add-stuff-h">
-<h3>7.2.2. bifrost/add_stuff.h<a class="headerlink" href="#bifrost-add-stuff-h" title="Permalink to this headline">¶</a></h3>
+<h3>8.2.2. bifrost/add_stuff.h<a class="headerlink" href="#bifrost-add-stuff-h" title="Permalink to this headline">¶</a></h3>
 <div class="code C highlight-default"><div class="highlight"><pre><span></span><span class="c1">#include &lt;bifrost/common.h&gt;</span>
 <span class="c1">#include &lt;bifrost/array.h&gt;</span>
 
@@ -200,17 +200,17 @@ pipeline stuff is just python (to be continued…)</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">7. How bifrost fits together</a><ul>
-<li><a class="reference internal" href="#a-trip-to-the-c">7.1. A trip to the C</a><ul>
-<li><a class="reference internal" href="#bifrost-python-ndarrays">7.1.1. Bifrost Python ndarrays</a></li>
-<li><a class="reference internal" href="#bifrost-c-bfarray">7.1.2. Bifrost C++ BFarray</a></li>
-<li><a class="reference internal" href="#using-your-c-code-in-python">7.1.3. Using your C++ code in Python</a></li>
-<li><a class="reference internal" href="#wrapping-up">7.1.4. Wrapping up</a></li>
+<li><a class="reference internal" href="#">8. How bifrost fits together</a><ul>
+<li><a class="reference internal" href="#a-trip-to-the-c">8.1. A trip to the C</a><ul>
+<li><a class="reference internal" href="#bifrost-python-ndarrays">8.1.1. Bifrost Python ndarrays</a></li>
+<li><a class="reference internal" href="#bifrost-c-bfarray">8.1.2. Bifrost C++ BFarray</a></li>
+<li><a class="reference internal" href="#using-your-c-code-in-python">8.1.3. Using your C++ code in Python</a></li>
+<li><a class="reference internal" href="#wrapping-up">8.1.4. Wrapping up</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#example-c-codes">7.2. Example C++ codes</a><ul>
-<li><a class="reference internal" href="#add-stuff-cpp">7.2.1. add_stuff.cpp</a></li>
-<li><a class="reference internal" href="#bifrost-add-stuff-h">7.2.2. bifrost/add_stuff.h</a></li>
+<li><a class="reference internal" href="#example-c-codes">8.2. Example C++ codes</a><ul>
+<li><a class="reference internal" href="#add-stuff-cpp">8.2.1. add_stuff.cpp</a></li>
+<li><a class="reference internal" href="#bifrost-add-stuff-h">8.2.2. bifrost/add_stuff.h</a></li>
 </ul>
 </li>
 </ul>
@@ -220,8 +220,8 @@ pipeline stuff is just python (to be continued…)</p>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="bfmap.html" title="previous chapter">6. Fast GPU math using bfMap</a></li>
-      <li>Next: <a href="Common-installation-and-execution-problems.html" title="next chapter">8. Common Installation and Execution Problems</a></li>
+      <li>Previous: <a href="bfmap.html" title="previous chapter">7. Fast GPU math using bfMap</a></li>
+      <li>Next: <a href="Common-installation-and-execution-problems.html" title="next chapter">9. Common Installation and Execution Problems</a></li>
   </ul></li>
 </ul>
 </div>
