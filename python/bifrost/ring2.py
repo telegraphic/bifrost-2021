@@ -1,5 +1,5 @@
 
-# Copyright (c) 2016-2020, The Bifrost Authors. All rights reserved.
+# Copyright (c) 2016-2021, The Bifrost Authors. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -30,7 +30,7 @@
 
 from __future__ import print_function, absolute_import
 
-from bifrost.libbifrost import _bf, _check, _get, BifrostObject, _string2space, _space2string
+from bifrost.libbifrost import _bf, _check, _get, BifrostObject, _string2space
 from bifrost.DataType import DataType
 from bifrost.ndarray import ndarray, _address_as_buffer
 from copy import copy, deepcopy
@@ -81,6 +81,7 @@ class Ring(BifrostObject):
     def __init__(self, space='system', name=None, owner=None, core=None):
         # If this is non-None, then the object is wrapping a base Ring instance
         self.base = None
+        self.is_view = False   # This gets set to True by use of .view()
         self.space = space
         if name is None:
             name = 'ring_%i' % Ring.instance_count
@@ -102,11 +103,12 @@ class Ring(BifrostObject):
         self.owner = owner
         self.header_transform = None
     def __del__(self):
-        if self.base is not None:
+        if self.base is not None and not self.is_view:
             BifrostObject.__del__(self)
     def view(self):
         new_ring = copy(self)
         new_ring.base = self
+        new_ring.is_view = True
         return new_ring
     def resize(self, contiguous_bytes, total_bytes=None, nringlet=1):
         _check( _bf.bfRingResize(self.obj,
@@ -232,7 +234,7 @@ class SequenceBase(object):
         hdr_buffer = _address_as_buffer(self._header_ptr, size, readonly=True)
         hdr_array = np.frombuffer(hdr_buffer, dtype=np.uint8)
         hdr_array.flags['WRITEABLE'] = False
-        self._header = json.loads(hdr_array.tostring())
+        self._header = json.loads(hdr_array.tobytes())
         return self._header
 
 class WriteSequence(SequenceBase):

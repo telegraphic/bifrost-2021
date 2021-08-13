@@ -1,6 +1,5 @@
 
-# Copyright (c) 2016-2020, The Bifrost Authors. All rights reserved.
-# Copyright (c) 2016, NVIDIA CORPORATION. All rights reserved.
+# Copyright (c) 2016-2021, The Bifrost Authors. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -43,13 +42,11 @@ bf = _bf # Public access to library
 
 # Internal helpers below
 
-
 class EndOfDataStop(Exception):
     """ This class is used as a Py3 StopIterator 
     
-    In modern Python 3, reaching a StopIterator in a generator will
+    In Python >3.7, reaching a StopIterator in a generator will
     raise a RuntimeError  (so you can't do 'except StopIterator' to catch it!)    
-
     See PEP479 https://www.python.org/dev/peps/pep-0479/
     """
     pass
@@ -72,7 +69,6 @@ class BifrostObject(object):
         self._destroy()
 
 def _array(size_or_vals, dtype=None):
-    import ctypes
     if size_or_vals is None:
         return None
     try:
@@ -114,8 +110,7 @@ def _check(status):
             if status is None:
                 raise RuntimeError("WTF, status is None")
             if status == _bf.BF_STATUS_END_OF_DATA:
-                #raise EndOfDataStop()
-                raise StopIteration()
+                raise EndOfDataStop()
             elif status == _bf.BF_STATUS_WOULD_BLOCK:
                 raise IOError('BF_STATUS_WOULD_BLOCK')
             else:
@@ -123,8 +118,7 @@ def _check(status):
                 raise RuntimeError(status_str)
     else:
         if status == _bf.BF_STATUS_END_OF_DATA:
-            #raise EndOfDataStop()
-            raise StopIteration()
+            raise EndOfDataStop()
         elif status == _bf.BF_STATUS_WOULD_BLOCK:
             raise IOError('BF_STATUS_WOULD_BLOCK')
     return status
@@ -182,4 +176,3 @@ SPACE2STRING = {_bf.BF_SPACE_AUTO:         'auto',
                 _bf.BF_SPACE_CUDA_MANAGED: 'cuda_managed'}
 def _space2string(i):
     return SPACE2STRING[i]
-
