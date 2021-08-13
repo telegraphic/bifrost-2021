@@ -27,7 +27,7 @@
 
 from __future__ import absolute_import
 
-from bifrost.pipeline import SourceBlock
+from bifrost.pipeline import SourceBlock, SinkBlock
 from bifrost.Space import Space
 from bifrost.psrdada import Hdu
 from bifrost.libbifrost import _bf, _check
