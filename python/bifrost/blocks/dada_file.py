@@ -73,7 +73,7 @@ class DadaFileRead(object):
         self._header_callback = header_callback
         self.header = self._read_header(header_callback)
         itensor = self.header['_tensor']
-        self.dtype          = string2numpy(itensor['dtype'])
+        self.dtype          = np.dtype(string2numpy(itensor['dtype']))
         self.block_shape    = np.copy(itensor['shape'])
         self.block_shape[0] = 1
         self.block_size = np.prod(self.block_shape)
