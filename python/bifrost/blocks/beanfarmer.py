@@ -38,7 +38,7 @@ from copy import deepcopy
 
 
 class BeanfarmerDp4aBlock(bf.pipeline.TransformBlock):
-    def __init__(self, iring, n_avg=1, n_beam=32, n_chan=512, n_pol=2, n_ant=12, weights_file='',
+    def __init__(self, iring, weights_callback, n_avg=1, n_beam=32, n_chan=512, n_pol=2, n_ant=12, 
                  *args, **kwargs):
         super(BeanfarmerDp4aBlock, self).__init__(iring, *args, **kwargs)
         self.n_avg  = n_avg
@@ -46,53 +46,52 @@ class BeanfarmerDp4aBlock(bf.pipeline.TransformBlock):
         self.n_pol  = n_pol
         self.n_chan = n_chan
         self.n_ant  = n_ant
-        self.frame_count    = 0
-        self.weights_file = weights_file
+        self.on_data_cnt = 0
+        self.weights_callback = weights_callback
 
     def define_valid_input_spaces(self):
         """Return set of valid spaces (or 'any') for each input"""
         return ('cuda',)
     
     def on_sequence(self, iseq):
-        self.frame_count = 0
         ihdr = iseq.header
         itensor = ihdr['_tensor']
 
         to_raise = False
         
-        if self.weights_file in ('', None):
-            to_raise = True
-            print('ERR: need to specify weights hickle file')
-        else:
-            w = hkl.load(self.weights_file)
-
-        try:
-            assert w.shape == (self.n_chan, self.n_beam, self.n_pol, self.n_ant)
-            assert w.dtype.names[0] == 're'
-            assert w.dtype.names[1] == 'im'
-            assert str(w.dtype[0]) == 'int8'
-        except AssertionError:
-            print('ERR: beam weight shape/dtype is incorrect')
-            print('ERR: beam weights shape is: %s' % str(w.shape))
-            print('ERR: shape should be %s' % str((self.n_chan, self.n_beam, self.n_pol, self.n_ant, 2)))
-            print('ERR: dtype should be int8, dtype: %s' % w.dtype.str)
-            to_raise = True
-        #w = np.ones((self.n_chan, self.n_beam, self.n_pol, self.n_ant), dtype='int8')
-        self.weights = bf.ndarray(w, dtype='ci8', space='cuda')
-
-        try:
-            assert(itensor['labels'] == ['time', 'freq', 'fine_time', 'pol', 'station'])
-            assert(itensor['dtype'] == 'ci8')
-            assert(ihdr['gulp_nframe'] == 1)
-        except AssertionError:
-            print('ERR: gulp_nframe %s (must be 1!)' % str(ihdr['gulp_nframe']))
-            print('ERR: Frame shape %s' % str(itensor['shape']))
-            print('ERR: Frame labels %s' % str(itensor['labels']))
-            print('ERR: Frame dtype %s' % itensor['dtype'])
-            to_raise = True
-        
-        if to_raise:
-            raise RuntimeError('Correlator block misconfiguration. Check tensor labels, dtype, shape, gulp size).')
+#        if self.weights_file in ('', None):
+#            to_raise = True
+#            print('ERR: need to specify weights hickle file')
+#        else:
+#            w = hkl.load(self.weights_file)
+#
+#        try:
+#            assert w.shape == (self.n_chan, self.n_beam, self.n_pol, self.n_ant)
+#            assert w.dtype.names[0] == 're'
+#            assert w.dtype.names[1] == 'im'
+#            assert str(w.dtype[0]) == 'int8'
+#        except AssertionError:
+#            print('ERR: beam weight shape/dtype is incorrect')
+#            print('ERR: beam weights shape is: %s' % str(w.shape))
+#            print('ERR: shape should be %s' % str((self.n_chan, self.n_beam, self.n_pol, self.n_ant, 2)))
+#            print('ERR: dtype should be int8, dtype: %s' % w.dtype.str)
+#            to_raise = True
+#        #w = np.ones((self.n_chan, self.n_beam, self.n_pol, self.n_ant), dtype='int8')
+#        self.weights = bf.ndarray(w, dtype='ci8', space='cuda')
+#
+#        try:
+#            assert(itensor['labels'] == ['time', 'freq', 'fine_time', 'pol', 'station'])
+#            assert(itensor['dtype'] == 'ci8')
+#            assert(ihdr['gulp_nframe'] == 1)
+#        except AssertionError:
+#            print('ERR: gulp_nframe %s (must be 1!)' % str(ihdr['gulp_nframe']))
+#            print('ERR: Frame shape %s' % str(itensor['shape']))
+#            print('ERR: Frame labels %s' % str(itensor['labels']))
+#            print('ERR: Frame dtype %s' % itensor['dtype'])
+#            to_raise = True
+#        
+#        if to_raise:
+#            raise RuntimeError('Correlator block misconfiguration. Check tensor labels, dtype, shape, gulp size).')
 
         ohdr = deepcopy(ihdr)
         otensor = ohdr['_tensor']
@@ -102,9 +101,13 @@ class BeanfarmerDp4aBlock(bf.pipeline.TransformBlock):
         ft0, fts = itensor['scales'][2]
         otensor['shape']  = [itensor['shape'][0], itensor['shape'][1], self.n_beam, itensor['shape'][2] // self.n_avg]
         otensor['labels'] = ['time', 'freq', 'beam', 'fine_time']
-        otensor['scales'] = [itensor['scales'][0], itensor['scales'][1], [0, 0], [ft0, fts / self.n_avg]]
+        otensor['scales'] = [itensor['scales'][0], itensor['scales'][1], [0, 0], [ft0, fts * self.n_avg]]
         otensor['units']  = [itensor['units'][0], itensor['units'][1], None, itensor['units'][2]]
         otensor['dtype'] = 'f32'
+
+        # reset the on_data_count
+        print("on_data_cnt was",self.on_data_cnt,", resetting to zero")
+        self.on_data_cnt = 0
 
         return ohdr
 
@@ -112,15 +115,22 @@ class BeanfarmerDp4aBlock(bf.pipeline.TransformBlock):
         idata = ispan.data
         odata = ospan.data
 
+        # If this is the first block, derive fan beam weights
+        if self.on_data_cnt == 0:
+            self.weights_callback.generate_fanbeam_weights()
+            self.fanbeamweights = self.weights_callback.fanbeamweights_gpu
+
         # Run the beamformer
         #print(idata.shape, self.weights.shape, odata.shape, self.n_avg)
-        res = _bf.BeanFarmer(idata.as_BFarray(), self.weights.as_BFarray(), odata.as_BFarray(), np.int32(self.n_avg))
+        res = _bf.BeanFarmer(idata.as_BFarray(), self.fanbeamweights.as_BFarray(), odata.as_BFarray(), np.int32(self.n_avg))
+
+        self.on_data_cnt += 1
 
         ncommit = ispan.data.shape[0]
         return ncommit
 
 
-def beanfarmer(iring, n_avg=1, n_beam=32, n_chan=512, n_pol=2, n_ant=12, weights_file='', *args, **kwargs):
+def beanfarmer(iring, weights_callback, n_avg=1, n_beam=32, n_chan=512, n_pol=2, n_ant=12, *args, **kwargs):
     """ Beamform, detect + integrate (filterbank) array using GPU.
 
     ** Tensor Semantics **
@@ -136,19 +146,19 @@ def beanfarmer(iring, n_avg=1, n_beam=32, n_chan=512, n_pol=2, n_ant=12, weights
     Args:
       nframe_to_avg (int): Number of frames to average across. 1 = no averaging.
       iring (Ring or Block): Input data source.
+      weights_callback: WeightsGenerator class that generates weights when generate_fanbeam_weights is called.
+                        generate_fanbeam_weights creates a bf.ndarray in CUDA space with the same shape as ispan.data
       n_avg (int): Number of frames to average together
       n_beam (int): Number of beams to form
       n_chan (int): Number of channels
       n_pol  (int): Number of polarizations for antennas (1 or 2)
       n_ant  (int): Number of antennas/stands (n_ant=12 and n_pol=2 means 24 inputs)
-      weights_file (str): Path to hickle file in which beam weights are stored. Beam weights
-                          must have the same shape as (chan, pol, ant, beam) etc here.
       *args: Arguments to ``bifrost.pipeline.TransformBlock``.
       **kwargs: Keyword Arguments to ``bifrost.pipeline.TransformBlock``.
     Returns:
         BeanfarmerDp4aBlock: A new beanfarmer block instance.
     """
 
-    return BeanfarmerDp4aBlock(iring, n_avg, n_beam, n_chan, n_pol, n_ant, weights_file, *args, **kwargs)
+    return BeanfarmerDp4aBlock(iring, weights_callback, n_avg, n_beam, n_chan, n_pol, n_ant,  *args, **kwargs)
 
 

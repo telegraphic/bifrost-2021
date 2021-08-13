@@ -36,11 +36,12 @@ import numpy as np
 from copy import deepcopy
         
 class CorrelateDp4aBlock(bf.pipeline.TransformBlock):
-    def __init__(self, iring, nframe_to_avg=1,
+    def __init__(self, iring, nframe_to_avg=1, process_frame=1,
                  *args, **kwargs):
         super(CorrelateDp4aBlock, self).__init__(iring, *args, **kwargs)
         self.nframe_to_avg = nframe_to_avg
-        self.frame_count    = 0
+        self.process_frame = process_frame
+        self.frame_count   = 0
 
     def define_valid_input_spaces(self):
         """Return set of valid spaces (or 'any') for each input"""
@@ -87,7 +88,8 @@ class CorrelateDp4aBlock(bf.pipeline.TransformBlock):
             reset = 1   # Reset output array to zero before computing xcorr
         
         # Run the cross-correlation
-        _bf.XcorrLite(idata.as_BFarray(), odata.as_BFarray(), np.int32(reset))
+        if self.frame_count % self.process_frame == 0:
+            _bf.XcorrLite(idata.as_BFarray(), odata.as_BFarray(), np.int32(reset))
 
         # Update gulp / frame counters and reset as required
         self.frame_count += 1   
@@ -98,7 +100,7 @@ class CorrelateDp4aBlock(bf.pipeline.TransformBlock):
             ncommit = 0
         return ncommit
 
-def correlate_dp4a(iring, nframe_to_avg=1, *args, **kwargs):
+def correlate_dp4a(iring, nframe_to_avg=1, process_frame=1, *args, **kwargs):
     """ Cross-correlate [time freq station fine_time] array using GPU.
 
     Simple GPU kernel for up to N=32 antennas, uses DP4A instruction for
@@ -118,13 +120,14 @@ def correlate_dp4a(iring, nframe_to_avg=1, *args, **kwargs):
       * Can currently only average across frames if gulp_nframe = 1
 
     Args:
-      nframe_to_avg (int): Number of frames to average across. 1 = no averaging.
       iring (Ring or Block): Input data source.
+      nframe_to_avg (int): Number of frames to average across. 1 = no averaging.
+      process_frame (int): Process 1 out of every process_frame frames. 1=process all data.
       *args: Arguments to ``bifrost.pipeline.TransformBlock``.
       **kwargs: Keyword Arguments to ``bifrost.pipeline.TransformBlock``.
     Returns:
         CorrelateDp4aBlock: A new correlator block instance.
     """
-    return CorrelateDp4aBlock(iring, nframe_to_avg, *args, **kwargs)
+    return CorrelateDp4aBlock(iring, nframe_to_avg, process_frame, *args, **kwargs)
 
 
