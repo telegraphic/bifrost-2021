@@ -71,5 +71,5 @@ setup(name='bifrost',
           "pint>=0.7.0",
           "graphviz>=0.5.0",
           "pyparsing>=2.4.7",
-          "matplotlib<=2.1.0"
+          "matplotlib"
       ])

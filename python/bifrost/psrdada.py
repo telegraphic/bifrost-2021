@@ -51,8 +51,9 @@ def get_pointer_value(ptr):
     return ctypes.c_void_p.from_buffer(ptr).value
 
 def _cast_to_bytes(unknown):
+    """ handle the difference between python 2 and 3 """
     if type(unknown) is str:
-        return unknown
+        return unknown.encode("utf-8")
     elif type(unknown) is bytes:
         return unknown
 
@@ -205,11 +206,11 @@ class IpcWriteDataBuf(IpcBaseIO):
 
 class Hdu(object):
     def __init__(self):
+        self.connected = False
+        self.registered = False
         self._dada = _dada
         self.log = MultiLog()
         self.hdu = _dada.dada_hdu_create(self.log.obj)
-        self.connected = False
-        self.registered = False
     def __del__(self):
         self.disconnect()
         if hasattr(self, "hdu"):

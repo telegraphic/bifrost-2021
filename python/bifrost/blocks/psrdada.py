@@ -149,7 +149,7 @@ class PsrDadaSourceBlock(SourceBlock):
 
 def _keyval_to_dadastr(key, val):
      """ Convert key: value pair into a DADA string """
-     return "{key:20s}{val}\n".format(key=key.upper(), val=val)
+     return "{key:20s} {val}\n".format(key=key.upper(), val=val)
 
 
 def _extract_tensor_scale(key, tensor):
