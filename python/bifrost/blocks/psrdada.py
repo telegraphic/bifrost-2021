@@ -27,7 +27,7 @@
 
 from __future__ import absolute_import
 
-from bifrost.pipeline import SourceBlock
+from bifrost.pipeline import SourceBlock, SinkBlock
 from bifrost.Space import Space
 from bifrost.psrdada import Hdu
 from bifrost.libbifrost import _bf, _check
@@ -77,7 +77,8 @@ class PsrDadaBufferReader(object):
                     break
         return byte0
     def close(self):
-        self.block.close()
+        if self.block:
+            self.block.close()
     def __enter__(self):
         return self
     def __exit__(self, type, value, tb):
@@ -101,7 +102,15 @@ def _cast_to_type(string):
     try: return float(string)
     except ValueError: pass
     return string
+
+def _cast_to_string(unknown):
+    if type(unknown) is bytes:
+        return unknown.decode('utf-8')
+    elif type(unknown) is str:
+        return unknown
+
 def parse_dada_header(headerstr, cast_types=True):
+    headerstr = _cast_to_string(headerstr)
     headerstr = headerstr[:headerstr.find('\0')]
     header = {}
     for line in headerstr.split('\n'):
@@ -140,7 +149,7 @@ class PsrDadaSourceBlock(SourceBlock):
 
 def _keyval_to_dadastr(key, val):
      """ Convert key: value pair into a DADA string """
-     return "{key:20s}{val}\n".format(key=key.upper(), val=val)
+     return "{key:20s} {val}\n".format(key=key.upper(), val=val)
 
 
 def _extract_tensor_scale(key, tensor):

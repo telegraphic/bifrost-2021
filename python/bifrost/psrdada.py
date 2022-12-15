@@ -50,15 +50,23 @@ import ctypes
 def get_pointer_value(ptr):
     return ctypes.c_void_p.from_buffer(ptr).value
 
+def _cast_to_bytes(unknown):
+    """ handle the difference between python 2 and 3 """
+    if type(unknown) is str:
+        return unknown.encode("utf-8")
+    elif type(unknown) is bytes:
+        return unknown
+
 class MultiLog(object):
     count = 0
     def __init__(self, name=None):
         if name is None:
             name = "MultiLog%i" % MultiLog.count
             MultiLog.count += 1
-        self.obj = _dada.multilog_open(name, '\0')
+        self.obj = _dada.multilog_open(_cast_to_bytes(name), _cast_to_bytes('\0'))
     def __del__(self):
-        _dada.multilog_close(self.obj)
+        if hasattr(self, 'obj'):
+            _dada.multilog_close(self.obj)
 
 class IpcBufBlock(object):
     def __init__(self, buf, mutable=False):
@@ -198,14 +206,15 @@ class IpcWriteDataBuf(IpcBaseIO):
 
 class Hdu(object):
     def __init__(self):
+        self.connected = False
+        self.registered = False
         self._dada = _dada
         self.log = MultiLog()
         self.hdu = _dada.dada_hdu_create(self.log.obj)
-        self.connected = False
-        self.registered = False
     def __del__(self):
         self.disconnect()
-        _dada.dada_hdu_destroy(self.hdu)
+        if hasattr(self, "hdu"):
+            _dada.dada_hdu_destroy(self.hdu)
     def _connect(self, buffer_key=0xDADA):
         self.buffer_key = buffer_key
         _dada.dada_hdu_set_key(self.hdu, self.buffer_key)

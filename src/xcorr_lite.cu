@@ -9,7 +9,7 @@
 #include <iostream>
 
 
-#define DCP_DEBUG
+//#define DCP_DEBUG
 
 extern "C" {
 
