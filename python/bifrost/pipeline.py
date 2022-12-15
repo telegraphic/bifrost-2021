@@ -38,6 +38,7 @@ except ImportError:
     import Queue as queue
 import time
 import signal
+import warnings
 from copy import copy
 from collections import defaultdict
 try:
@@ -51,7 +52,10 @@ from bifrost.ring2 import Ring, ring_view
 from bifrost.temp_storage import TempStorage
 from bifrost.proclog import ProcLog
 from bifrost.ndarray import memset_array # TODO: This feels a bit hacky
-from bifrost.libbifrost import EndOfDataStop 
+from bifrost.libbifrost import EndOfDataStop
+
+from bifrost import telemetry
+telemetry.track_module()
 
 # Note: This must be called before any devices are initialized. It's also
 #          almost always desirable when running pipelines, so we do it here at
@@ -62,7 +66,7 @@ def izip(*iterables):
     while True:
         try:
             yield [next(it) for it in iterables]
-        except EndOfDataStop:
+        except (EndOfDataStop, StopIteration):
             return
 
 thread_local = threading.local()
@@ -266,7 +270,7 @@ class Pipeline(BlockScope):
         join_all(self.threads, timeout=self.shutdown_timeout)
         for thread in self.threads:
             if thread.is_alive():
-                print("WARNING: Thread %s did not shut down on time and will be killed" % thread.name)
+                warnings.warn("Thread %s did not shut down on time and will be killed" % thread.name, RuntimeWarning)
     def shutdown_on_signals(self, signals=None):
         if signals is None:
             signals = [signal.SIGHUP,
@@ -281,7 +285,7 @@ class Pipeline(BlockScope):
                             reversed(sorted(signal.__dict__.items()))
                             if v.startswith('SIG') and
                             not v.startswith('SIG_'))
-        print("WARNING: Received signal %i %s, shutting down pipeline" % (signum, SIGNAL_NAMES[signum]))
+        warnings.warn("Received signal %i %s, shutting down pipeline" % (signum, SIGNAL_NAMES[signum]), RuntimeWarning)
         self.shutdown()
     def __enter__(self):
         thread_local.pipeline_stack.append(self)
@@ -413,7 +417,7 @@ class Block(BlockScope):
     def commit_spans(self, ospans, ostrides_actual, ogulp_overlaps):
         # Allow returning None to indicate complete consumption
         if ostrides_actual is None:
-            ostrides = [None] * len(ospans)
+            ostrides_actual = [None] * len(ospans)
         # Note: If ospan.nframe < ogulp_overlap, no frames will be committed
         ostrides = [ostride if ostride is not None
                     else max(ospan.nframe - ogulp_overlap, 0)

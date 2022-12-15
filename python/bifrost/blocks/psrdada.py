@@ -33,10 +33,8 @@ from bifrost.psrdada import Hdu
 from bifrost.libbifrost import _bf, _check
 import bifrost.ndarray
 
-import numpy as np
-from datetime import datetime
-from copy import deepcopy
-import os
+from bifrost import telemetry
+telemetry.track_module()
 
 # TODO: Move to memory.py?
 def _get_space(arr):

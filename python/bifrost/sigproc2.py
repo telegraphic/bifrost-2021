@@ -56,8 +56,12 @@ data:          [time][pol][nbit] (General case: [time][if/pol][chan][nbit])
 from __future__ import print_function, division
 
 import struct
+import warnings
 import numpy as np
 from collections import defaultdict
+
+from bifrost import telemetry
+telemetry.track_module()
 
 _string_values = ['source_name',
                   'rawdatafile']
@@ -193,7 +197,7 @@ def write_header(hdr, f):
             _header_write(f, key, int(val), fmt='=b')
         else:
             #raise KeyError("Unknown sigproc header key: %s"%key)
-            print("WARNING: Unknown sigproc header key: %s" % key)
+            warnings.warn("Unknown sigproc header key: '%s'" % key, RuntimeWarning)
     _header_write_string(f, "HEADER_END")
 
 def _read_header(f):
@@ -220,7 +224,7 @@ def _read_header(f):
             header[expecting] = key
             expecting = None
         else:
-            print("WARNING: Unknown header key", key)
+            warnings.warn("Unknown header key: '%s'" % key, RuntimeWarning)
     if 'nchans' not in header:
         header['nchans'] = 1
     header['header_size'] = f.tell()

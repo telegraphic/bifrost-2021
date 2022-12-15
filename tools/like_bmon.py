@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-# Copyright (c) 2017-2021, The Bifrost Authors. All rights reserved.
-# Copyright (c) 2017-2021, The University of New Mexico. All rights reserved.
+# Copyright (c) 2017-2022, The Bifrost Authors. All rights reserved.
+# Copyright (c) 2017-2022, The University of New Mexico. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -46,6 +46,9 @@ except ImportError:
 
 os.environ['VMA_TRACELEVEL'] = '0'
 from bifrost.proclog import PROCLOG_DIR, load_by_pid
+
+from bifrost import telemetry
+telemetry.track_script()
 
 
 BIFROST_STATS_BASE_DIR = PROCLOG_DIR
@@ -245,6 +248,7 @@ def main(args):
 
     try:
         sel = 0
+        off = 0
 
         while True:
             t = time.time()
@@ -258,6 +262,10 @@ def main(args):
                 sel -= 1
             elif c == curses.KEY_DOWN:
                 sel += 1
+            elif c == curses.KEY_LEFT:
+                off -= 8
+            elif c == curses.KEY_RIGHT:
+                off += 8
 
             ## Find the current selected process and see if it has changed
             newSel = min([nPID-1, max([0, sel])])
@@ -356,6 +364,8 @@ def main(args):
             output += '\n'
             k = _add_line(scr, k, 0, output, rev)
             if act is not None:
+                off = min([max([0, len(act['cmd'])-size[1]+23]), max([0, off])])
+
                 output = 'Good:                  %18iB           %18iB\n' % (act['rx']['good'   ], act['tx']['good'   ])
                 k = _add_line(scr, k, 0, output, std)
                 output = 'Missing:               %18iB           %18iB\n' % (act['rx']['missing'], act['tx']['missing'])
@@ -368,7 +378,7 @@ def main(args):
                 k = _add_line(scr, k, 0, output, std)
                 output = 'Current Missing:       %18.2f%%           %18.2f%%\n' % (act['rx']['closs'  ], act['tx']['closs'  ])
                 k = _add_line(scr, k, 0, output, std)
-                output = 'Command:               %s' % act['cmd']
+                output = 'Command:               %s' % act['cmd'][off:]
                 k = _add_line(scr, k, 0, output[:size[1]], std)
 
             ### Clear to the bottom

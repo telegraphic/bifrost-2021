@@ -27,11 +27,14 @@
 
 from __future__ import absolute_import
 
-import bifrost as bf
+from bifrost.unpack import unpack as bf_unpack
 from bifrost.pipeline import TransformBlock
 from bifrost.DataType import DataType
 
 from copy import deepcopy
+
+from bifrost import telemetry
+telemetry.track_module()
 
 class UnpackBlock(TransformBlock):
     def __init__(self, iring, dtype, align_msb=False,
@@ -58,7 +61,7 @@ class UnpackBlock(TransformBlock):
     def on_data(self, ispan, ospan):
         idata = ispan.data
         odata = ospan.data
-        bf.unpack.unpack(idata, odata, self.align_msb)
+        bf_unpack(idata, odata, self.align_msb)
 
 def unpack(iring, dtype, *args, **kwargs):
     """Unpack data to a larger data type.

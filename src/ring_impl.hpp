@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2016, The Bifrost Authors. All rights reserved.
  * Copyright (c) 2016, NVIDIA CORPORATION. All rights reserved.
  *
@@ -42,10 +42,6 @@
 #include <queue>
 #include <set>
 #include <memory>
-
-#ifndef BF_NUMA_ENABLED
-#define BF_NUMA_ENABLED 0
-#endif
 
 class BFsequence_impl;
 class BFspan_impl;

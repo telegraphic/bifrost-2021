@@ -34,6 +34,9 @@ import numpy as np
 import bifrost.pipeline as bfp
 from bifrost.dtype import name_nbit2numpy
 
+from bifrost import telemetry
+telemetry.track_module()
+
 class BinaryFileRead(object):
     """ Simple file-like reading object for pipeline testing
 
@@ -107,6 +110,12 @@ class BinaryFileWriteBlock(bfp.SinkBlock):
         self.current_fileobj = None
         self.file_ext = file_ext
         self.count = 0
+
+    def __del__(self):
+        try:
+            self.current_fileobj.close()
+        except AttributeError:
+            pass
 
     def __del__(self):
         try:

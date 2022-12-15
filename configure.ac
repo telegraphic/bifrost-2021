@@ -1,9 +1,11 @@
-AC_INIT([bifrost], [0.9.0], [], [], [https://github.com/ledatelescope/bifrost/])
+AC_INIT([bifrost], [0.10.0], [], [], [https://github.com/ledatelescope/bifrost/])
 AC_LANG(C++)
 AC_CONFIG_SRCDIR([src/cuda.cpp])
 
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_MACRO_DIR([config])
+
+m4_ifdef([AM_SILENT_RULES], [], [AC_SUBST([AM_DEFAULT_VERBOSITY], [1])])
 
 : ${CXXFLAGS="-O3 -Wall -pedantic"}
 
@@ -27,7 +29,7 @@ AS_IF([test x${CTAGS} = x],
 AC_MSG_CHECKING([whether ${CTAGS} is exuberant])
 AS_IF([! ${CTAGS} --version | grep -q Exuberant],
       [AC_MSG_RESULT([no])
-       AC_MSG_ERROR([exhuberant ctags is required, but ${CTAGS} is a different version])],
+       AC_MSG_ERROR([exuberant ctags is required, but ${CTAGS} is a different version])],
       [AC_MSG_RESULT([yes])])
 
 AC_SUBST(SO_EXT, $shrext_cmds)
@@ -37,10 +39,21 @@ AC_SUBST(SO_EXT, $shrext_cmds)
 #
 
 AC_C_INLINE
-AX_CXX_COMPILE_STDCXX(11, noext, mandatory)
+AX_CXX_COMPILE_STDCXX(20, noext, optional)
+AS_IF([test x$HAVE_CXX20 != x1],
+      [AX_CXX_COMPILE_STDCXX(17, noext, optional)
+       AS_IF([test x$HAVE_CXX17 != x1],
+             [AX_CXX_COMPILE_STDCXX(14, noext, optional)
+              AS_IF([test x$HAVE_CXX14 != x1],
+                    [AX_CXX_COMPILE_STDCXX(11, noext, mandatory)])])])
+AX_CHECK_CXX_FILESYSTEM
+AX_CHECK_CXX_ENDS_WITH
 AC_CHECK_FUNCS([memset])
 AC_CHECK_FUNCS([rint])
 AC_CHECK_FUNCS([socket])
+AC_CHECK_FUNCS([recvmsg],
+               [AC_SUBST([HAVE_RECVMSG], [1])],
+               [AC_SUBST([HAVE_RECVMSG], [0])])
 AC_CHECK_FUNCS([sqrt])
 AC_CHECK_FUNCS([strerror])
 AC_CHECK_HEADERS([arpa/inet.h])
@@ -73,6 +86,10 @@ AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
 AC_TYPE_UINT8_T
+AC_TYPE_LONG_DOUBLE_WIDER
+AC_SUBST([HAVE_FLOAT128], [0])
+AS_IF([test x$HAVE_HAVE_LONG_DOUBLE_WIDER = x1],
+      [AC_SUBST([HAVE_FLOAT128], [0])])
 
 #
 # NUMA
@@ -117,6 +134,9 @@ AC_SUBST([HAVE_VMA], [0])
 AS_IF([test x$enable_vma != xno],
       [AC_CHECK_LIB([vma], [recvfrom_zcopy],
                     [AC_SUBST([HAVE_VMA], [1])
+                     LIBS="$LIBS -lvma"])
+       AC_CHECK_LIB([vma], [vma_recvfrom_zcopy],
+                    [AC_SUBST([HAVE_VMA], [1])
                      LIBS="$LIBS -lvma"])])
 
 #
@@ -139,6 +159,8 @@ AC_ARG_WITH([shared_mem],
            [],
            [with_shared_mem=16384])
 AC_SUBST([GPU_SHAREDMEM], [$with_shared_mem])
+AS_IF([test x$HAVE_CUDA = x0],
+      [AC_SUBST([GPU_SHAREDMEM], [0])])
 
 #
 # Bifrost memory alignment
@@ -181,15 +203,7 @@ AC_SUBST([HAVE_TRACE], [0])
 AS_IF([test x$enable_trace != xno],
       [AC_SUBST([HAVE_TRACE], [1])])
 
-AC_ARG_ENABLE([native_arch],
-              [AS_HELP_STRING([--disable-native-arch],
-                              [disable native architecture compilation (default=no)])],
-              [enable_native_arch=no],
-              [enable_native_arch=yes])
-AS_IF([test x$enable_native_arch != xyes],
-      [],
-      [CXXFLAGS="$CXXFLAGS -march=native"
-       NVCCFLAGS="$NVCCFLAGS -Xcompiler \"-march=native\""])
+AX_CHECK_NATIVE_ARCH
 
 AC_ARG_ENABLE([cuda_debug],
               [AS_HELP_STRING([--enable-cuda-debug],
@@ -200,6 +214,15 @@ AC_SUBST([HAVE_CUDA_DEBUG], [0])
 AS_IF([test x$enable_cuda_debug != xno],
       [AC_SUBST([HAVE_CUDA_DEBUG], [1])
        NVCCFLAGS="$NVCCFLAGS -G"])
+
+AC_ARG_ENABLE([map_cache],
+              [AS_HELP_STRING([--disable-map-cache],
+                              [disable caching bifrost.map kernels (default=no)])],
+              [enable_map_cache=no],
+              [enable_map_cache=yes])
+AC_SUBST([HAVE_MAP_CACHE], [0])
+AS_IF([test x$enable_map_cache != xno],
+      [AC_SUBST([HAVE_MAP_CACHE], [$HAVE_CUDA])])
 
 #
 # Python
@@ -213,6 +236,10 @@ AC_ARG_ENABLE([python],
 AC_SUBST([HAVE_PYTHON], [0])
 AS_IF([test x$enable_python != xno],
       [AX_WITH_PROG(PYTHON, python, no, $PATH)
+       AS_IF([test x${PYTHON} = xno],
+             [AC_PATH_PROG(PYTHON3, python3, no, $PATH)
+              AS_IF([test x${PYTHON3} != xno],
+                    [AC_SUBST([PYTHON], [$PYTHON3])])])
        AS_IF([test x${PYTHON} != xno],
              [AC_MSG_CHECKING([whether $PYTHON as ctypesgen])
               AS_IF([! ${PYTHON} -c "import ctypesgen" 2>/dev/null],
@@ -261,9 +288,50 @@ DX_INIT_DOXYGEN([bifrost])
 # Version splitting
 #
 
-AC_SUBST([PACKAGE_VERSION_MAJOR], [`echo $PACKAGE_VERSION | $AWK -F. -e '{print $1}'`])
-AC_SUBST([PACKAGE_VERSION_MINOR], [`echo $PACKAGE_VERSION | $AWK -F. -e '{print $2}'`])
-AC_SUBST([PACKAGE_VERSION_MICRO], [`echo $PACKAGE_VERSION | $AWK -F. -e '{print $3}'`])
+AC_SUBST([PACKAGE_VERSION_MAJOR], [`echo $PACKAGE_VERSION | $AWK -F. '{print $1}'`])
+AC_SUBST([PACKAGE_VERSION_MINOR], [`echo $PACKAGE_VERSION | $AWK -F. '{print $2}'`])
+AC_SUBST([PACKAGE_VERSION_MICRO], [`echo $PACKAGE_VERSION | $AWK -F. '{print $3}'`])
+
+#
+# C++17/C++14/C++11 toggling
+#
+
+AC_SUBST([MAP_KERNEL_STDCXX], [c++11])
+AC_SUBST([STDCXX_IS_SET], [0])
+AS_IF([test x$HAVE_CXX20 = x1],
+      [AC_SUBST([STDCXX_IS_SET], [1])
+       CXXFLAGS="-std=c++20 $CXXFLAGS"
+       AS_IF([test x$CUDA_HAVE_CXX20 = x1],
+             [NVCCFLAGS="-std=c++20 $NVCCFLAGS"
+              AC_SUBST([MAP_KERNEL_STDCXX], [c++20])],
+             [AS_IF([test x$CUDA_HAVE_CXX17 = x1],
+                    [NVCCFLAGS="-std=c++17 $NVCCFLAGS"
+                     AC_SUBST([MAP_KERNEL_STDCXX], [c++17])],
+                    [AS_IF([test x$CUDA_HAVE_CXX14 = x1],
+                           [NVCCFLAGS="-std=c++14 $NVCCFLAGS"
+                            AC_SUBST([MAP_KERNEL_STDCXX], [c++14])],
+                           [NVCCFLAGS="-std=c++11 $NVCCFLAGS"])])])])
+AS_IF([test x$HAVE_CXX17 = x1],
+      [AC_SUBST([STDCXX_IS_SET], [1])
+       CXXFLAGS="-std=c++17 $CXXFLAGS"
+       AS_IF([test x$CUDA_HAVE_CXX17 = x1],
+             [NVCCFLAGS="-std=c++17 $NVCCFLAGS"
+              AC_SUBST([MAP_KERNEL_STDCXX], [c++17])],
+             [AS_IF([test x$CUDA_HAVE_CXX14 = x1],
+                    [NVCCFLAGS="-std=c++14 $NVCCFLAGS"
+                     AC_SUBST([MAP_KERNEL_STDCXX], [c++14])],
+                    [NVCCFLAGS="-std=c++11 $NVCCFLAGS"])])])
+AS_IF([test x$HAVE_CXX14 = x1],
+      [AC_SUBST([STDCXX_IS_SET], [1])
+       CXXFLAGS="-std=c++14 $CXXFLAGS"
+       AS_IF([test x$CUDA_HAVE_CXX14 = x1],
+             [NVCCFLAGS="-std=c++14 $NVCCFLAGS"
+              AC_SUBST([MAP_KERNEL_STDCXX], [c++14])],
+             [NVCCFLAGS="-std=c++11 $NVCCFLAGS"])])
+AS_IF([test x$STDCXX_IS_SET != x1],
+      [AC_SUBST([STDCXX_IS_SET], [1])
+       CXXFLAGS="-std=c++11 $CXXFLAGS"
+       NVCCFLAGS="-std=c++11 -Xcompiler \"-DTHRUST_IGNORE_DEPRECATED_CPP_DIALECT\" $NVCCFLAGS"])
 
 #
 # Linking flags
@@ -275,3 +343,56 @@ NVCCFLAGS="$NVCCFLAGS -Xcompiler \"$lt_prog_compiler_pic_CXX\""
 AC_CONFIG_FILES([config.mk Makefile src/Makefile python/Makefile share/bifrost.pc src/bifrost/config.h])
 
 AC_OUTPUT
+
+#
+# User warnings
+#
+
+#
+# User notes
+#
+
+echo ""
+
+AS_IF([test x$HAVE_CUDA = x1],
+      [AC_MSG_NOTICE(cuda: yes - v$CUDA_VERSION - $GPU_ARCHS - $with_stream_model streams)],
+      [AC_MSG_NOTICE(cuda: no)])
+
+AS_IF([test x$HAVE_NUMA = x1],
+      [AC_MSG_NOTICE(numa: yes)],
+      [AC_MSG_NOTICE(numa: no)])
+
+AS_IF([test x$HAVE_HWLOC = x1],
+      [AC_MSG_NOTICE(hwloc: yes)],
+      [AC_MSG_NOTICE(hwloc: no)])
+
+AS_IF([test x$HAVE_VMA = x1],
+      [AC_MSG_NOTICE(libvma: yes)],
+      [AC_MSG_NOTICE(libvma: no)])
+
+AS_IF([test x$HAVE_PYTHON = x1],
+      [AC_MSG_NOTICE(python bindings: yes)],
+      [AC_MSG_NOTICE(python bindings: no)])
+
+AC_MSG_NOTICE(memory alignment: $ALIGNMENT)
+      
+AC_MSG_NOTICE(logging directory: $HAVE_TMPFS)
+
+AC_SUBST([OPTIONS], [])
+AS_IF([test x$enable_debug != xno],
+      [AC_SUBST([OPTIONS], ["$OPTIONS debug"])])
+AS_IF([test x$enable_trace != xno],
+      [AC_SUBST([OPTIONS], ["$OPTIONS trace"])])
+AS_IF([test x$enable_cuda_debug != xno],
+      [AC_SUBST([OPTIONS], ["$OPTIONS cuda_debug"])])
+AS_IF([test x$enable_native_arch != xno],
+      [AC_SUBST([OPTIONS], ["$OPTIONS native"])])
+AS_IF([test x$HAVE_FLOAT128 != x0],
+      [AC_SUBST([OPTIONS], ["$OPTIONS float128"])])
+AS_IF([test x$enable_map_cache != xno],
+      [AC_SUBST([OPTIONS], ["$OPTIONS map_cache"])])
+AC_MSG_NOTICE(options:$OPTIONS)
+      
+echo ""
+echo "Bifrost is now ready to be compiled.  Please run 'make'"
+echo ""

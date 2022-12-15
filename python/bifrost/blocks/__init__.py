@@ -55,10 +55,10 @@ from bifrost.blocks.dada_file import read_dada_file
 
 try: # Avoid error if portaudio library not installed
     from bifrost.blocks.audio import read_audio, AudioSourceBlock
-except:
+except (ImportError, OSError):
     pass
 
 try: # Avoid error if psrdada library not installed
     from bifrost.blocks.psrdada import read_psrdada_buffer, PsrDadaSourceBlock
-except:
+except (ImportError, OSError):
     pass

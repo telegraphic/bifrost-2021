@@ -1,10 +1,22 @@
 doc
 version.py
+/python/bifrost/version/__init__.py
 *_generated.py
 .log*.txt
 test/data/
 *.bin
 *.swp
+
+# Local configuration
+aclocal.m4
+autom4te.cache
+config.status
+config.mk
+Makefile
+src/Makefile
+python/Makefile
+share/bifrost.pc
+src/bifrost/config.h
 
 # Local configuration
 aclocal.m4
